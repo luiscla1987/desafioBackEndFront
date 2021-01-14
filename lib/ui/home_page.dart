@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:movies/ui/movie_page.dart';
 import 'package:share/share.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -33,20 +32,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          child: Image.network(
-            'https://images.squarespace-cdn.com/content/5e51f832a66b975c4e8430a1/1594917411952-SFR6NA0WD212HTQS197H/Spoten+Logo.png?content-type=image%2Fpng',
-            fit: BoxFit.cover,
-            width: 200.0,
-          ),
-          onTap: () async {
-            const _url = 'https://spoten.app/br/home/';
-            if (await canLaunch(_url)) {
-              await launch(_url);
-            } else {
-              throw 'Could not launch $_url';
-            }
-          },
+        title: Image.network(
+          'https://images.squarespace-cdn.com/content/5e51f832a66b975c4e8430a1/1594917411952-SFR6NA0WD212HTQS197H/Spoten+Logo.png?content-type=image%2Fpng',
+          fit: BoxFit.cover,
+          width: 200.0,
         ),
         centerTitle: true,
       ),
@@ -95,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.hasError)
                       return Container();
                     else
-                      return _createGifTable(context, snapshot);
+                      return _createMovieTable(context, snapshot);
                 }
               },
             ),
@@ -113,7 +102,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot) {
+  Widget _createMovieTable(BuildContext context, AsyncSnapshot snapshot) {
     return GridView.builder(
       padding: EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -157,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                     size: 70.0,
                   ),
                   Text(
-                    "Carregar mais...",
+                    "View more...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22.0,
