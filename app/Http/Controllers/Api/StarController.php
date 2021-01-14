@@ -3,10 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StarRequest;
+use App\Models\Star;
 
 class StarController extends Controller
 {
+    private $star;
+
+    public function __construct(Star $star)
+    {
+        $this->star = $star;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class StarController extends Controller
      */
     public function index()
     {
-        //
+        $star = $this->star->paginate('4');
+
+        return response()->json($star, 200);
     }
 
     /**
@@ -33,9 +42,20 @@ class StarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StarRequest $request)
     {
-        //
+        $data = $request->all();
+        try {
+            $star = $this->star->create($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Saved'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -46,7 +66,17 @@ class StarController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $star = $this->star->findOrFail($id);
+
+            return response()->json(
+                [
+                    'data' => $star
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -67,9 +97,21 @@ class StarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id, StarRequest $request)
     {
-        //
+        $data = $request->all();
+        try {
+            $star = $this->star->findOrFail($id);
+            $star->update($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Updated'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -80,6 +122,17 @@ class StarController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $star = $this->star->findOrFail($id);
+            $star->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Deleted'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 }

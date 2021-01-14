@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\RatingRequest;
 use App\Models\Rating;
 
 class RatingController extends Controller
@@ -42,7 +42,7 @@ class RatingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RatingRequest $request)
     {
         $data = $request->all();
         try {
@@ -66,7 +66,15 @@ class RatingController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $rating = $this->rating->findOrFail($id);
+
+            return response()->json([
+                'data' => $rating
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -87,7 +95,7 @@ class RatingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id, Request $request)
+    public function update($id, RatingRequest $request)
     {
         $data = $request->all();
         try {
@@ -112,6 +120,17 @@ class RatingController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $rating = $this->rating->findOrFail($id);
+            $rating->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Deleted'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 }

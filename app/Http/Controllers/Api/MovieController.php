@@ -64,8 +64,21 @@ class MovieController extends Controller
     public function store(MovieRequest $request)
     {
         $data = $request->all();
-        $movie = $this->movie->create($data);
-        return response()->json($movie);
+        try {
+            $movie = $this->movie->create($data);
+
+            /* if (isset($data['stars']) && count($data['stars'])) {
+                $movie->stars()->sync($data['stars']);
+            } */
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Saved'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -76,8 +89,17 @@ class MovieController extends Controller
      */
     public function show($id)
     {
-        $movie = $this->movie->find($id);
-        return response()->json($movie);
+        try {
+            $movie = $this->movie->findOrFail($id);
+
+            return response()->json(
+                [
+                    'data' => $movie
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -97,12 +119,25 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update($id, MovieRequest $request)
     {
         $data = $request->all();
-        $movie = $this->movie->find($data['id']);
-        $movie->update($data);
-        return response()->json($movie);
+        try {
+            $movie = $this->movie->findOrFail($id);
+            $movie->update($data);
+
+            /* if (isset($data['stars']) && count($data['stars'])) {
+                $movie->stars()->sync($data['stars']);
+            } */
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Updated'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 
     /**
@@ -113,9 +148,17 @@ class MovieController extends Controller
      */
     public function destroy($id)
     {
-        $movie = $this->movie->find($id);
-        $movie->delete();
+        try {
+            $movie = $this->movie->findOrFail($id);
+            $movie->delete();
 
-        return response()->json(['data' => ['msg' => 'Deleted successfully']]);
+            return response()->json([
+                'data' => [
+                    'msg' => 'Succesfully Data Deleted'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        };
     }
 }

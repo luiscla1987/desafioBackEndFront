@@ -39,6 +39,16 @@ Route::namespace('Api')->group(
             Route::get('/{id}', 'RatingController@show');
             Route::post('/', 'RatingController@store');
             Route::put('/{id}', 'RatingController@update');
+            Route::patch('/', 'RatingController@update');
+            Route::delete('/{id}', 'RatingController@destroy');
+        });
+        Route::prefix('stars')->group(function () {
+            Route::get('/', 'StarController@index');
+            Route::get('/{id}', 'StarController@show');
+            Route::post('/', 'StarController@store');
+            Route::put('/{id}', 'StarController@update');
+            Route::patch('/', 'StarController@update');
+            Route::delete('/{id}', 'StarController@destroy');
         });
     }
 );

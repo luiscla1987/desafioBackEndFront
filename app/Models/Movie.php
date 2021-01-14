@@ -25,4 +25,8 @@ class Movie extends Model
     {
         return $this->hasMany(Rating::class);
     }
+    public function stars()
+    {
+        return $this->belongsToMany(Star::class);
+    }
 }
